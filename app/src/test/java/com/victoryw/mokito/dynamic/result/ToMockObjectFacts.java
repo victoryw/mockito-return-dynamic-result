@@ -3,19 +3,53 @@
  */
 package com.victoryw.mokito.dynamic.result;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
+import org.mockito.stubbing.Answer;
+
+import java.security.SecureRandom;
+import java.text.MessageFormat;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
 class ToMockObjectFacts {
 
+    private static Integer serialNumber = 0;
+    private static final String answer1 = "Hello 1";
+    private static final String answer2 = "Hello 2";
     private ToMockObject mockObject;
 
-    @BeforeEach void setup() {
+    @BeforeEach
+    void setup() {
         mockObject = mock(ToMockObject.class);
     }
-    @Test void should_return_the_value_() {
-        assertNotNull(classUnderTest.getGreeting(), "app should have a greeting");
+
+    @Test
+    void should_return_the_value_of_mock_function_by_given_order() {
+        given(mockObject.getStubFunction()).
+                willReturn(answer1).
+                willReturn(answer2);
+
+        assertEquals(answer1, mockObject.getStubFunction());
+        assertEquals(answer2, mockObject.getStubFunction());
+    }
+
+    @Test
+    void should_return_the_function_call_not_the_fix_value() {
+        given(mockObject.getStubFunction()).willAnswer(
+                invocation -> {
+                    serialNumber = serialNumber + 1;
+                    return MessageFormat.format("Hello {0}", serialNumber);
+                });
+
+        assertEquals(answer1, mockObject.getStubFunction());
+        assertEquals(answer2, mockObject.getStubFunction());
+
+
+
+
     }
 }

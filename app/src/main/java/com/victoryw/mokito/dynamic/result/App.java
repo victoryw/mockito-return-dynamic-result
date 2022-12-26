@@ -4,11 +4,18 @@
 package com.victoryw.mokito.dynamic.result;
 
 public class App {
+    private final ToMockObject toMockObject;
+
+    public App(ToMockObject toMockObject) {
+        this.toMockObject = toMockObject;
+    }
+
     public String getGreeting() {
-        return "Hello World!";
+        return toMockObject.getStubFunction();
     }
 
     public static void main(String[] args) {
-        System.out.println(new App().getGreeting());
+        System.out.println(new App(new ToMockObject()).getGreeting());
     }
 }
+
